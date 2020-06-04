@@ -21,6 +21,18 @@ public class TestController {
         return "User Content.";
     }
 
+    @GetMapping("/seller")
+    @PreAuthorize("hasRole('SELLER') or hasRole('ADMIN')")
+    public String sellerAccess() {
+        return "Seller Content.";
+    }
+
+    @GetMapping("/carrier")
+    @PreAuthorize("hasRole('CARRIER') or hasRole('ADMIN')")
+    public String carrierAccess() {
+        return "Carrier Content.";
+    }
+
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
     public String adminAccess() {

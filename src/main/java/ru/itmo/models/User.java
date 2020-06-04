@@ -1,18 +1,15 @@
 package ru.itmo.models;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.persistence.*;
-import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(	name = "users",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = "username"),
-                @UniqueConstraint(columnNames = "email")
+                @UniqueConstraint(columnNames = "username")
         })
 public class User {
     @Id
@@ -25,8 +22,7 @@ public class User {
 
     @NotBlank
     @Size(max = 50)
-    @Email
-    private String email;
+    private String role;
 
     @NotBlank
     @Size(max = 120)
@@ -41,9 +37,9 @@ public class User {
     public User() {
     }
 
-    public User(String username, String email, String password) {
+    public User(String username, String role, String password) {
         this.username = username;
-        this.email = email;
+        this.role = role;
         this.password = password;
     }
 
@@ -63,12 +59,12 @@ public class User {
         this.username = username;
     }
 
-    public String getEmail() {
-        return email;
+    public String getRole() {
+        return role;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setRole(String role) {
+        this.role = role;
     }
 
     public String getPassword() {
