@@ -16,27 +16,27 @@ import ru.itmo.services.OrderService;
 @RequestMapping("/api/orders")
 public class OrderController {
 
-    @Autowired
-    OrderService orderService;
-
-    @PostMapping
-    public ResponseEntity<Order> create(@RequestBody OrderForm form) {
-        List<OrderProductDto> formDtos = form.getProductOrders();
-        validateProductsExistence(formDtos);
-        // create order logic
-        // populate order with products
-
-        order.setOrderProducts(orderProducts);
-        orderService.update(order);
-
-        String uri = ServletUriComponentsBuilder
-                .fromCurrentServletMapping()
-                .path("/orders/{id}")
-                .buildAndExpand(order.getId())
-                .toString();
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", uri);
-
-        return new ResponseEntity<>(order, headers, HttpStatus.CREATED);
-    }
+//    @Autowired
+//    OrderService orderService;
+//
+//    @PostMapping
+//    public ResponseEntity<Order> create(@RequestBody OrderForm form) {
+//        List<OrderProductDto> formDtos = form.getProductOrders();
+//        validateProductsExistence(formDtos);
+//        // create order logic
+//        // populate order with products
+//
+//        order.setOrderProducts(orderProducts);
+//        orderService.update(order);
+//
+//        String uri = ServletUriComponentsBuilder
+//                .fromCurrentServletMapping()
+//                .path("/orders/{id}")
+//                .buildAndExpand(order.getId())
+//                .toString();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.add("Location", uri);
+//
+//        return new ResponseEntity<>(order, headers, HttpStatus.CREATED);
+//    }
 }
