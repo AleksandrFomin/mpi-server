@@ -7,6 +7,8 @@ import org.springframework.stereotype.Component;
 import ru.itmo.models.user.Product;
 import ru.itmo.repositories.ProductRepository;
 
+import java.util.List;
+
 @Component
 public class DataLoader implements ApplicationRunner {
 
@@ -14,7 +16,17 @@ public class DataLoader implements ApplicationRunner {
     private ProductRepository productRepository;
 
     public void run(ApplicationArguments args) {
-        productRepository.save(new Product("apple", 100.0, ""));
-        productRepository.save(new Product("potatoe", 30.0, ""));
+        addProductToDB(new Product("apple", 100.0, ""));
+        addProductToDB(new Product("potatoe", 30.0, ""));
+    }
+
+    private void addProductToDB(Product product) {
+        List<Product> productList = productRepository.findAll();
+        for (Product p : productList) {
+            if (p.getName().equals(product.getName())) {
+                return;
+            }
+        }
+        productRepository.save(product);
     }
 }

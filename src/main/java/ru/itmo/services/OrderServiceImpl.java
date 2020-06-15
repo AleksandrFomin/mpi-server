@@ -1,5 +1,6 @@
 package ru.itmo.services;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.itmo.models.user.Order;
 import ru.itmo.repositories.OrderRepository;
@@ -11,6 +12,7 @@ import java.time.LocalDate;
 @Transactional
 public class OrderServiceImpl implements OrderService {
 
+    @Autowired
     OrderRepository orderRepository;
 
     @Override

@@ -2,6 +2,7 @@ package ru.itmo.services;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import ru.itmo.exceptions.ResourceNotFoundException;
 import ru.itmo.models.user.Product;
 import ru.itmo.repositories.ProductRepository;
 
@@ -21,10 +22,9 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public Product getProduct(long id) {
-        return null;
-//        return productRepository
-//                .findById(id)
-//                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
+        return productRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Product not found"));
     }
 
     @Override
