@@ -2,6 +2,7 @@ package ru.itmo.models.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import ru.itmo.models.User;
 
 import javax.persistence.*;
 import javax.validation.Valid;
@@ -22,8 +23,12 @@ public class Order {
 
     private String status;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
     @JsonManagedReference
-    @OneToMany(mappedBy = "pk.order")
+    @OneToMany(mappedBy = "pk.order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Valid
     private List<OrderProduct> orderProducts = new ArrayList<>();
 
@@ -72,5 +77,13 @@ public class Order {
 
     public void setOrderProducts(List<OrderProduct> orderProducts) {
         this.orderProducts = orderProducts;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

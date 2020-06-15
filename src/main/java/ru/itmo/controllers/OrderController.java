@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ru.itmo.dto.OrderDto;
 import ru.itmo.dto.OrderProductDto;
 import ru.itmo.models.user.Order;
 import ru.itmo.models.user.OrderProduct;
@@ -15,6 +16,7 @@ import ru.itmo.services.OrderService;
 import ru.itmo.services.ProductService;
 
 import javax.validation.constraints.NotNull;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -33,19 +35,19 @@ public class OrderController {
     OrderProductService orderProductService;
 
     @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public @NotNull Iterable<Order> list() {
-        return this.orderService.getAllOrders();
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
+    public @NotNull Iterable<OrderDto> list(Principal principal) {
+        return this.orderService.getAllOrders(principal);
     }
 
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
-    public ResponseEntity<Order> create(@RequestBody OrderForm form) {
+    public ResponseEntity<Order> create(Principal principal, @RequestBody OrderForm form) {
         List<OrderProductDto> formDtos = form.getProductOrders();
         validateProductsExistence(formDtos);
         Order order = new Order();
 //        order.setStatus(OrderStatus.PAID.name());
-        order = this.orderService.create(order);
+        order = this.orderService.create(order, principal);
 
         List<OrderProduct> orderProducts = new ArrayList<>();
         for (OrderProductDto dto : formDtos) {
