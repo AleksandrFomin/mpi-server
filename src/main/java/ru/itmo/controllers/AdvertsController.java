@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import ru.itmo.dto.AdvertDto;
+import ru.itmo.payload.response.MessageResponse;
 import ru.itmo.services.AdvertService;
 
 import java.security.Principal;
@@ -23,9 +24,11 @@ public class AdvertsController {
     public ResponseEntity<?> createAd(Principal principal, @RequestBody AdvertDto advertForm) {
         boolean result = advertService.save(advertForm, principal);
         if (result) {
-            return ResponseEntity.ok().build();
+            return ResponseEntity.ok(new MessageResponse("Advert created successfully!"));
         } else {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: You have already used this product name!"));
         }
     }
 }

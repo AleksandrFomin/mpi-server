@@ -40,6 +40,9 @@ public class AdvertServiceImpl implements AdvertService {
                 return false;
             }
         }
+        if (advertDto.getProduct().getPrice() < 1 || advertDto.getProduct().getPrice() > 100000) {
+            return false;
+        }
         Advert advert = new Advert(advertDto.getProduct(), user);
         advertRepository.save(advert);
         return true;
