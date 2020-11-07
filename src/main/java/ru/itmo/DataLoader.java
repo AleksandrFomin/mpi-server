@@ -17,7 +17,9 @@ public class DataLoader implements ApplicationRunner {
 
     public void run(ApplicationArguments args) {
         addProductToDB(new Product("apple", 100.0, ""));
-        addProductToDB(new Product("potatoe", 30.0, ""));
+        addProductToDB(new Product("potato", 30.0, ""));
+        addProductToDB(new Product("eggs", 40.0, ""));
+        addProductToDB(new Product("tomatoes", 60.0, ""));
     }
 
     private void addProductToDB(Product product) {
