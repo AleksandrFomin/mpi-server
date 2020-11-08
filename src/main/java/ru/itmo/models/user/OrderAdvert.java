@@ -1,6 +1,7 @@
 package ru.itmo.models.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import ru.itmo.models.seller.Advert;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -9,40 +10,40 @@ import javax.persistence.Transient;
 import java.util.Objects;
 
 @Entity
-public class OrderProduct {
+public class OrderAdvert {
 
     @EmbeddedId
     @JsonIgnore
-    private OrderProductPK pk;
+    private OrderAdvertPK pk;
 
     @Column(nullable = false)
     private Integer quantity;
 
-    public OrderProduct() {
+    public OrderAdvert() {
     }
 
-    public OrderProduct(Order order, Product product, Integer quantity) {
-        pk = new OrderProductPK();
+    public OrderAdvert(Order order, Advert advert, Integer quantity) {
+        pk = new OrderAdvertPK();
         pk.setOrder(order);
-        pk.setProduct(product);
+        pk.setAdvert(advert);
         this.quantity = quantity;
     }
 
     @Transient
-    public Product getProduct() {
-        return this.pk.getProduct();
+    public Advert getAdvert() {
+        return this.pk.getAdvert();
     }
 
     @Transient
     public Double getTotalPrice() {
-        return getProduct().getPrice() * getQuantity();
+        return getAdvert().getProduct().getPrice() * getQuantity();
     }
 
-    public OrderProductPK getPk() {
+    public OrderAdvertPK getPk() {
         return pk;
     }
 
-    public void setPk(OrderProductPK pk) {
+    public void setPk(OrderAdvertPK pk) {
         this.pk = pk;
     }
 
@@ -58,7 +59,7 @@ public class OrderProduct {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OrderProduct that = (OrderProduct) o;
+        OrderAdvert that = (OrderAdvert) o;
         return Objects.equals(pk, that.pk) &&
                 Objects.equals(quantity, that.quantity);
     }

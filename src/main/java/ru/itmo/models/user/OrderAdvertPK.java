@@ -1,6 +1,7 @@
 package ru.itmo.models.user;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import ru.itmo.models.seller.Advert;
 
 import javax.persistence.Embeddable;
 import javax.persistence.FetchType;
@@ -10,7 +11,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Embeddable
-public class OrderProductPK implements Serializable {
+public class OrderAdvertPK implements Serializable {
 
     @JsonBackReference
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
@@ -18,8 +19,8 @@ public class OrderProductPK implements Serializable {
     private Order order;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
-    @JoinColumn(name = "product_id")
-    private Product product;
+    @JoinColumn(name = "advert_id")
+    private Advert advert;
 
     public Order getOrder() {
         return order;
@@ -29,25 +30,25 @@ public class OrderProductPK implements Serializable {
         this.order = order;
     }
 
-    public Product getProduct() {
-        return product;
+    public Advert getAdvert() {
+        return advert;
     }
 
-    public void setProduct(Product product) {
-        this.product = product;
+    public void setAdvert(Advert advert) {
+        this.advert = advert;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        OrderProductPK that = (OrderProductPK) o;
+        OrderAdvertPK that = (OrderAdvertPK) o;
         return Objects.equals(order, that.order) &&
-                Objects.equals(product, that.product);
+                Objects.equals(advert, that.advert);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(order, product);
+        return Objects.hash(order, advert);
     }
 }

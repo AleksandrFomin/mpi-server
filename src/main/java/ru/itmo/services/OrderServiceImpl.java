@@ -3,11 +3,12 @@ package ru.itmo.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import ru.itmo.dto.AdvertDto;
 import ru.itmo.dto.OrderDto;
-import ru.itmo.dto.OrderProductDto;
+import ru.itmo.dto.OrderAdvertDto;
 import ru.itmo.models.User;
 import ru.itmo.models.user.Order;
-import ru.itmo.models.user.OrderProduct;
+import ru.itmo.models.user.OrderAdvert;
 import ru.itmo.repositories.OrderRepository;
 import ru.itmo.repositories.UserRepository;
 
@@ -16,7 +17,6 @@ import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -39,14 +39,16 @@ public class OrderServiceImpl implements OrderService {
             OrderDto orderDto = new OrderDto();
             orderDto.setId(order.getId());
             orderDto.setStatus(order.getStatus());
-            List<OrderProductDto> orderProductDtoList = new ArrayList<>();
-            for(OrderProduct orderProduct : order.getOrderProducts()) {
-                OrderProductDto orderProductDto = new OrderProductDto();
-                orderProductDto.setProduct(orderProduct.getProduct());
-                orderProductDto.setQuantity(orderProduct.getQuantity());
-                orderProductDtoList.add(orderProductDto);
+            List<OrderAdvertDto> orderAdvertDtoList = new ArrayList<>();
+            for(OrderAdvert orderAdvert : order.getOrderAdverts()) {
+                OrderAdvertDto orderAdvertDto = new OrderAdvertDto();
+                orderAdvertDto.setAdvert(new AdvertDto(
+                        orderAdvert.getAdvert().getId(), orderAdvert.getAdvert().getProduct()
+                ));
+                orderAdvertDto.setQuantity(orderAdvert.getQuantity());
+                orderAdvertDtoList.add(orderAdvertDto);
             }
-            orderDto.setOrderProducts(orderProductDtoList);
+            orderDto.setOrderProducts(orderAdvertDtoList);
             orderDtos.add(orderDto);
         }
         return orderDtos;

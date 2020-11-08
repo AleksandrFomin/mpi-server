@@ -7,7 +7,11 @@ import java.security.Principal;
 
 public interface AdvertService {
 
+    public Advert getAdvert(long id);
+
     public Iterable<Advert> getAllAdverts(Principal principal);
+
+    public Iterable<Advert> getAdvertsByUser(Principal principal);
 
     public boolean save(AdvertDto advertDto, Principal principal);
 

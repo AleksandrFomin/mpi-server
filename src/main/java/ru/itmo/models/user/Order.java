@@ -30,13 +30,13 @@ public class Order {
     @JsonManagedReference
     @OneToMany(mappedBy = "pk.order", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @Valid
-    private List<OrderProduct> orderProducts = new ArrayList<>();
+    private List<OrderAdvert> orderAdverts = new ArrayList<>();
 
     @Transient
     public Double getTotalOrderPrice() {
         double sum = 0D;
-        List<OrderProduct> orderProducts = getOrderProducts();
-        for (OrderProduct op : orderProducts) {
+        List<OrderAdvert> orderAdverts = getOrderAdverts();
+        for (OrderAdvert op : orderAdverts) {
             sum += op.getTotalPrice();
         }
         return sum;
@@ -44,7 +44,7 @@ public class Order {
 
     @Transient
     public int getNumberOfProducts() {
-        return this.orderProducts.size();
+        return this.orderAdverts.size();
     }
 
     public Long getId() {
@@ -71,12 +71,12 @@ public class Order {
         this.status = status;
     }
 
-    public List<OrderProduct> getOrderProducts() {
-        return orderProducts;
+    public List<OrderAdvert> getOrderAdverts() {
+        return orderAdverts;
     }
 
-    public void setOrderProducts(List<OrderProduct> orderProducts) {
-        this.orderProducts = orderProducts;
+    public void setOrderAdverts(List<OrderAdvert> orderAdverts) {
+        this.orderAdverts = orderAdverts;
     }
 
     public User getUser() {

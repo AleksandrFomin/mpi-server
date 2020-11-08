@@ -8,12 +8,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.itmo.dto.OrderDto;
-import ru.itmo.dto.OrderProductDto;
+import ru.itmo.dto.OrderAdvertDto;
+import ru.itmo.dto.OrderForm;
 import ru.itmo.models.user.Order;
-import ru.itmo.models.user.OrderProduct;
-import ru.itmo.services.OrderProductService;
+import ru.itmo.models.user.OrderAdvert;
+import ru.itmo.services.AdvertService;
+import ru.itmo.services.OrderAdvertService;
 import ru.itmo.services.OrderService;
-import ru.itmo.services.ProductService;
 
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
@@ -28,11 +29,11 @@ import java.util.stream.Collectors;
 public class OrderController {
 
     @Autowired
-    ProductService productService;
+    AdvertService advertService;
     @Autowired
     OrderService orderService;
     @Autowired
-    OrderProductService orderProductService;
+    OrderAdvertService orderAdvertService;
 
     @GetMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
@@ -43,20 +44,20 @@ public class OrderController {
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Order> create(Principal principal, @RequestBody OrderForm form) {
-        List<OrderProductDto> formDtos = form.getProductOrders();
-        validateProductsExistence(formDtos);
+        List<OrderAdvertDto> formDtos = form.getAdvertOrders();
+        validateAdvertsExistence(formDtos);
         Order order = new Order();
 //        order.setStatus(OrderStatus.PAID.name());
         order = this.orderService.create(order, principal);
 
-        List<OrderProduct> orderProducts = new ArrayList<>();
-        for (OrderProductDto dto : formDtos) {
-            orderProducts.add(orderProductService.create(
-                    new OrderProduct(order, productService.getProduct(dto.getProduct().getId()), dto.getQuantity())
+        List<OrderAdvert> orderAdverts = new ArrayList<>();
+        for (OrderAdvertDto dto : formDtos) {
+            orderAdverts.add(orderAdvertService.create(
+                    new OrderAdvert(order, advertService.getAdvert(dto.getAdvert().getId()), dto.getQuantity())
             ));
         }
 
-        order.setOrderProducts(orderProducts);
+        order.setOrderAdverts(orderAdverts);
 
         this.orderService.update(order);
 
@@ -71,30 +72,17 @@ public class OrderController {
         return new ResponseEntity<>(order, headers, HttpStatus.CREATED);
     }
 
-    private void validateProductsExistence(List<OrderProductDto> orderProducts) {
-        List<OrderProductDto> list = orderProducts
+    private void validateAdvertsExistence(List<OrderAdvertDto> orderProducts) {
+        List<OrderAdvertDto> list = orderProducts
                 .stream()
-                .filter(op -> Objects.isNull(productService.getProduct(op
-                        .getProduct()
+                .filter(op -> Objects.isNull(advertService.getAdvert(op
+                        .getAdvert()
                         .getId())))
                 .collect(Collectors.toList());
 
 //        if (!CollectionUtils.isEmpty(list)) {
 //            new ResourceNotFoundException("Product not found");
 //        }
-    }
-
-    public static class OrderForm {
-
-        private List<OrderProductDto> productOrders;
-
-        public List<OrderProductDto> getProductOrders() {
-            return productOrders;
-        }
-
-        public void setProductOrders(List<OrderProductDto> productOrders) {
-            this.productOrders = productOrders;
-        }
     }
 
 }

@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.itmo.dto.AdvertDto;
+import ru.itmo.exceptions.ResourceNotFoundException;
 import ru.itmo.models.User;
 import ru.itmo.models.seller.Advert;
 import ru.itmo.repositories.AdvertRepository;
@@ -22,7 +23,19 @@ public class AdvertServiceImpl implements AdvertService {
     UserRepository userRepository;
 
     @Override
+    public Advert getAdvert(long id) {
+        return advertRepository
+                .findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Advert not found"));
+    }
+
+    @Override
     public Iterable<Advert> getAllAdverts(Principal principal) {
+        return advertRepository.findAll();
+    }
+
+    @Override
+    public Iterable<Advert> getAdvertsByUser(Principal principal) {
         String username = principal.getName();
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));

@@ -5,12 +5,12 @@ import java.util.List;
 public class OrderDto {
     private Long id;
     private String status;
-    private List<OrderProductDto> orderProducts;
+    private List<OrderAdvertDto> orderProducts;
 
     public OrderDto() {
     }
 
-    public OrderDto(Long id, String status, List<OrderProductDto> orderProducts) {
+    public OrderDto(Long id, String status, List<OrderAdvertDto> orderProducts) {
         this.id = id;
         this.status = status;
         this.orderProducts = orderProducts;
@@ -32,11 +32,11 @@ public class OrderDto {
         this.status = status;
     }
 
-    public List<OrderProductDto> getOrderProducts() {
+    public List<OrderAdvertDto> getOrderProducts() {
         return orderProducts;
     }
 
-    public void setOrderProducts(List<OrderProductDto> orderProducts) {
+    public void setOrderProducts(List<OrderAdvertDto> orderProducts) {
         this.orderProducts = orderProducts;
     }
 }
