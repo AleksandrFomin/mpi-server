@@ -5,14 +5,24 @@ import ru.itmo.models.user.Product;
 public class AdvertDto {
     private Long id;
     private Product product;
+    private String seller;
 
     public AdvertDto(){
 
     }
 
-    public AdvertDto(Long id, Product product) {
+    public AdvertDto(Long id, Product product, String seller) {
         this.id = id;
         this.product = product;
+        this.seller = seller;
+    }
+
+    public String getSeller() {
+        return seller;
+    }
+
+    public void setSeller(String seller) {
+        this.seller = seller;
     }
 
     public Product getProduct() {

@@ -47,7 +47,7 @@ public class AdvertsController {
         List<AdvertDto> advertDtoList = new ArrayList<>();
         Iterable<Advert> advertsList = advertService.getAllAdverts(principal);
         for (Advert advert : advertsList) {
-            advertDtoList.add(new AdvertDto(advert.getId(), advert.getProduct()));
+            advertDtoList.add(new AdvertDto(advert.getId(), advert.getProduct(), advert.getUser().getUsername()));
         }
         return advertDtoList;
     }

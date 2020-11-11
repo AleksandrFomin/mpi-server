@@ -43,12 +43,13 @@ public class OrderServiceImpl implements OrderService {
             for(OrderAdvert orderAdvert : order.getOrderAdverts()) {
                 OrderAdvertDto orderAdvertDto = new OrderAdvertDto();
                 orderAdvertDto.setAdvert(new AdvertDto(
-                        orderAdvert.getAdvert().getId(), orderAdvert.getAdvert().getProduct()
+                        orderAdvert.getAdvert().getId(), orderAdvert.getAdvert().getProduct(),
+                        orderAdvert.getAdvert().getUser().getUsername()
                 ));
                 orderAdvertDto.setQuantity(orderAdvert.getQuantity());
                 orderAdvertDtoList.add(orderAdvertDto);
             }
-            orderDto.setOrderProducts(orderAdvertDtoList);
+            orderDto.setAdvertOrders(orderAdvertDtoList);
             orderDtos.add(orderDto);
         }
         return orderDtos;

@@ -5,15 +5,15 @@ import java.util.List;
 public class OrderDto {
     private Long id;
     private String status;
-    private List<OrderAdvertDto> orderProducts;
+    private List<OrderAdvertDto> advertOrders;
 
     public OrderDto() {
     }
 
-    public OrderDto(Long id, String status, List<OrderAdvertDto> orderProducts) {
+    public OrderDto(Long id, String status, List<OrderAdvertDto> advertOrders) {
         this.id = id;
         this.status = status;
-        this.orderProducts = orderProducts;
+        this.advertOrders = advertOrders;
     }
 
     public Long getId() {
@@ -32,11 +32,11 @@ public class OrderDto {
         this.status = status;
     }
 
-    public List<OrderAdvertDto> getOrderProducts() {
-        return orderProducts;
+    public List<OrderAdvertDto> getAdvertOrders() {
+        return advertOrders;
     }
 
-    public void setOrderProducts(List<OrderAdvertDto> orderProducts) {
-        this.orderProducts = orderProducts;
+    public void setAdvertOrders(List<OrderAdvertDto> advertOrders) {
+        this.advertOrders = advertOrders;
     }
 }
