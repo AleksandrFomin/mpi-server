@@ -15,4 +15,5 @@ public interface AdvertService {
 
     public boolean save(AdvertDto advertDto, Principal principal);
 
+    boolean delete(Long id, Principal principal);
 }

@@ -1,11 +1,14 @@
 package ru.itmo.models.seller;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import ru.itmo.models.User;
 import ru.itmo.models.user.Product;
 
 import javax.persistence.*;
 
 @Entity
+@OnDelete(action = OnDeleteAction.CASCADE)
 public class Advert {
 
     @Id

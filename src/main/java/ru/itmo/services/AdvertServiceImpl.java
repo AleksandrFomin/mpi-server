@@ -12,6 +12,7 @@ import ru.itmo.repositories.UserRepository;
 
 import javax.transaction.Transactional;
 import java.security.Principal;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -58,6 +59,26 @@ public class AdvertServiceImpl implements AdvertService {
         }
         Advert advert = new Advert(advertDto.getProduct(), user);
         advertRepository.save(advert);
+        return true;
+    }
+
+    @Override
+    public boolean delete(Long id, Principal principal) {
+        String username = principal.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+
+        Optional<Advert> result = advertRepository.findById(id);
+        if (!result.isPresent()) {
+            return false;
+        }
+
+        Advert advert = result.get();
+        if (!advert.getUser().getId().equals(user.getId())) {
+            return false;
+        }
+
+        advertRepository.deleteById(id);
         return true;
     }
 }

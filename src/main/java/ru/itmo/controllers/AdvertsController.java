@@ -35,6 +35,19 @@ public class AdvertsController {
         }
     }
 
+    @PostMapping("/delete")
+    @PreAuthorize("hasRole('SELLER') or hasRole('ADMIN')")
+    public ResponseEntity<?> deleteAd(Principal principal, @RequestBody AdvertDto advertForm) {
+        boolean result = advertService.delete(advertForm.getId(), principal);
+        if (result) {
+            return ResponseEntity.ok(new MessageResponse("Advert removed successfully!"));
+        } else {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error"));
+        }
+    }
+
     @GetMapping("/seller")
     @PreAuthorize("hasRole('SELLER') or hasRole('ADMIN')")
     public @NotNull Iterable<Advert> getAdvertsByUser(Principal principal) {
