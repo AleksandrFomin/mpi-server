@@ -8,4 +8,5 @@ import ru.itmo.models.seller.Advert;
 @Repository
 public interface AdvertRepository extends JpaRepository<Advert, Long> {
     public Iterable<Advert> findAllByUser(User user);
+    void removeAdvertById(Long id);
 }

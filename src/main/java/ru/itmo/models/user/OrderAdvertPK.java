@@ -1,6 +1,8 @@
 package ru.itmo.models.user;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import ru.itmo.models.seller.Advert;
 
 import javax.persistence.Embeddable;
@@ -19,6 +21,7 @@ public class OrderAdvertPK implements Serializable {
     private Order order;
 
     @ManyToOne(optional = false, fetch = FetchType.EAGER)
+    @OnDelete(action = OnDeleteAction.CASCADE)
     @JoinColumn(name = "advert_id")
     private Advert advert;
 

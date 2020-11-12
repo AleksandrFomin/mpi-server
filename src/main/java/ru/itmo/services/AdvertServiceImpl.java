@@ -78,7 +78,8 @@ public class AdvertServiceImpl implements AdvertService {
             return false;
         }
 
-        advertRepository.deleteById(id);
+        advertRepository.removeAdvertById(advert.getId());
+
         return true;
     }
 }
