@@ -12,4 +12,6 @@ public interface OrderService {
     public Order create(Order order, Principal principal);
 
     public void update(Order order);
+
+    Iterable<OrderDto> getAllOrdersBySeller(Principal principal);
 }

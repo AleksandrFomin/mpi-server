@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.itmo.dto.AdvertDto;
 import ru.itmo.dto.OrderDto;
 import ru.itmo.dto.OrderAdvertDto;
+import ru.itmo.dto.OrderStatus;
 import ru.itmo.models.User;
 import ru.itmo.models.user.Order;
 import ru.itmo.models.user.OrderAdvert;
@@ -69,5 +70,41 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void update(Order order) {
         this.orderRepository.save(order);
+    }
+
+    @Override
+    public Iterable<OrderDto> getAllOrdersBySeller(Principal principal) {
+        String username = principal.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+
+        List<OrderDto> orderDtos = new ArrayList<>();
+        List<Order> orderList = this.orderRepository.findAll();
+        for(Order order : orderList) {
+            if (!order.getStatus().equals(OrderStatus.NEW.getStatus())) {
+                continue;
+            }
+            OrderDto orderDto = new OrderDto();
+            orderDto.setId(order.getId());
+            orderDto.setStatus(order.getStatus());
+            List<OrderAdvertDto> orderAdvertDtoList = new ArrayList<>();
+            for(OrderAdvert orderAdvert : order.getOrderAdverts()) {
+                if (!orderAdvert.getAdvert().getUser().getId().equals(user.getId())) {
+                    continue;
+                }
+                OrderAdvertDto orderAdvertDto = new OrderAdvertDto();
+                orderAdvertDto.setAdvert(new AdvertDto(
+                        orderAdvert.getAdvert().getId(), orderAdvert.getAdvert().getProduct(),
+                        orderAdvert.getAdvert().getUser().getUsername()
+                ));
+                orderAdvertDto.setQuantity(orderAdvert.getQuantity());
+                orderAdvertDtoList.add(orderAdvertDto);
+            }
+            if (!orderAdvertDtoList.isEmpty()) {
+                orderDto.setAdvertOrders(orderAdvertDtoList);
+                orderDtos.add(orderDto);
+            }
+        }
+        return orderDtos;
     }
 }

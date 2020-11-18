@@ -10,6 +10,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ru.itmo.dto.OrderDto;
 import ru.itmo.dto.OrderAdvertDto;
 import ru.itmo.dto.OrderForm;
+import ru.itmo.dto.OrderStatus;
+import ru.itmo.models.User;
 import ru.itmo.models.user.Order;
 import ru.itmo.models.user.OrderAdvert;
 import ru.itmo.services.AdvertService;
@@ -18,9 +20,7 @@ import ru.itmo.services.OrderService;
 
 import javax.validation.constraints.NotNull;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
@@ -41,6 +41,12 @@ public class OrderController {
         return this.orderService.getAllOrders(principal);
     }
 
+    @GetMapping("/seller")
+    @PreAuthorize("hasRole('SELLER') or hasRole('ADMIN')")
+    public @NotNull Iterable<OrderDto> listBySeller(Principal principal) {
+        return this.orderService.getAllOrdersBySeller(principal);
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Order> create(Principal principal, @RequestBody OrderForm form) {
@@ -51,12 +57,16 @@ public class OrderController {
         order = this.orderService.create(order, principal);
 
         List<OrderAdvert> orderAdverts = new ArrayList<>();
+        Set<String> sellers = new HashSet<>();
         for (OrderAdvertDto dto : formDtos) {
             orderAdverts.add(orderAdvertService.create(
                     new OrderAdvert(order, advertService.getAdvert(dto.getAdvert().getId()), dto.getQuantity())
             ));
+            sellers.add(dto.getAdvert().getSeller());
         }
 
+        order.setStatus(OrderStatus.NEW.getStatus());
+        order.setSubmitters((long) sellers.size());
         order.setOrderAdverts(orderAdverts);
 
         this.orderService.update(order);
