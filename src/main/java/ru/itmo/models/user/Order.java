@@ -32,7 +32,8 @@ public class Order {
     @Valid
     private List<OrderAdvert> orderAdverts = new ArrayList<>();
 
-    private Long submitters;
+    @ElementCollection
+    private List<Long> submitters = new ArrayList<>();
 
     @Transient
     public Double getTotalOrderPrice() {
@@ -89,11 +90,11 @@ public class Order {
         this.user = user;
     }
 
-    public Long getSubmitters() {
+    public List<Long> getSubmitters() {
         return submitters;
     }
 
-    public void setSubmitters(Long submitters) {
+    public void setSubmitters(List<Long> submitters) {
         this.submitters = submitters;
     }
 }

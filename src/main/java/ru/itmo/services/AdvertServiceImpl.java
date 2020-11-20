@@ -82,4 +82,11 @@ public class AdvertServiceImpl implements AdvertService {
 
         return true;
     }
+
+    @Override
+    public Long getUserIdByName(String name) {
+        User user = userRepository.findByUsername(name)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + name));
+        return user.getId();
+    }
 }

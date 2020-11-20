@@ -17,7 +17,9 @@ import javax.transaction.Transactional;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -84,6 +86,10 @@ public class OrderServiceImpl implements OrderService {
             if (!order.getStatus().equals(OrderStatus.NEW.getStatus())) {
                 continue;
             }
+            if (!order.getSubmitters().contains(user.getId())) {
+                continue;
+            }
+
             OrderDto orderDto = new OrderDto();
             orderDto.setId(order.getId());
             orderDto.setStatus(order.getStatus());
@@ -106,5 +112,31 @@ public class OrderServiceImpl implements OrderService {
             }
         }
         return orderDtos;
+    }
+
+    @Override
+    public void submitOrder(OrderDto order, Principal principal) {
+        String username = principal.getName();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+
+        Optional<Order> opt = this.orderRepository.findById(order.getId());
+        if (!opt.isPresent()) {
+            return;
+        }
+
+        Order submitted = opt.get();
+        List<Long> submitters = submitted.getSubmitters();
+        List<Long> newList = new ArrayList<>();
+        for (Long id : submitters) {
+            if (!id.equals(user.getId())) {
+                newList.add(id);
+            }
+        }
+        submitted.setSubmitters(newList);
+        if (newList.isEmpty()) {
+            submitted.setStatus(OrderStatus.SUMBITTED.getStatus());
+        }
+        orderRepository.save(submitted);
     }
 }

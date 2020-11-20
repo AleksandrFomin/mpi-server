@@ -14,6 +14,7 @@ import ru.itmo.dto.OrderStatus;
 import ru.itmo.models.User;
 import ru.itmo.models.user.Order;
 import ru.itmo.models.user.OrderAdvert;
+import ru.itmo.payload.response.MessageResponse;
 import ru.itmo.services.AdvertService;
 import ru.itmo.services.OrderAdvertService;
 import ru.itmo.services.OrderService;
@@ -47,6 +48,13 @@ public class OrderController {
         return this.orderService.getAllOrdersBySeller(principal);
     }
 
+    @PostMapping("/submit")
+    @PreAuthorize("hasRole('SELLER') or hasRole('ADMIN')")
+    public ResponseEntity<?> submitOrder(Principal principal, @RequestBody OrderDto orderDto) {
+        orderService.submitOrder(orderDto, principal);
+        return ResponseEntity.ok(new MessageResponse("Submitted!"));
+    }
+
     @PostMapping
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<Order> create(Principal principal, @RequestBody OrderForm form) {
@@ -57,16 +65,17 @@ public class OrderController {
         order = this.orderService.create(order, principal);
 
         List<OrderAdvert> orderAdverts = new ArrayList<>();
-        Set<String> sellers = new HashSet<>();
+        Set<Long> sellersIds = new HashSet<>();
         for (OrderAdvertDto dto : formDtos) {
             orderAdverts.add(orderAdvertService.create(
                     new OrderAdvert(order, advertService.getAdvert(dto.getAdvert().getId()), dto.getQuantity())
             ));
-            sellers.add(dto.getAdvert().getSeller());
+
+            sellersIds.add(advertService.getUserIdByName(dto.getAdvert().getSeller()));
         }
 
         order.setStatus(OrderStatus.NEW.getStatus());
-        order.setSubmitters((long) sellers.size());
+        order.setSubmitters(new ArrayList<>(sellersIds));
         order.setOrderAdverts(orderAdverts);
 
         this.orderService.update(order);
