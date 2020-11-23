@@ -48,6 +48,25 @@ public class OrderController {
         return this.orderService.getAllOrdersBySeller(principal);
     }
 
+    @GetMapping("/carrier")
+    @PreAuthorize("hasRole('CARRIER') or hasRole('ADMIN')")
+    public @NotNull Iterable<OrderDto> getSubmitted(Principal principal) {
+        return this.orderService.getAllSubmittedOrders(principal);
+    }
+
+    @PostMapping("/deliver")
+    @PreAuthorize("hasRole('CARRIER') or hasRole('ADMIN')")
+    public ResponseEntity<?> deliverOrder(Principal principal, @RequestBody OrderDto orderDto) {
+        boolean res = orderService.deliverOrder(orderDto, principal);
+        if (res) {
+            return ResponseEntity.ok(new MessageResponse("Delivered!"));
+        } else {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: This order was already delivered!"));
+        }
+    }
+
     @PostMapping("/submit")
     @PreAuthorize("hasRole('SELLER') or hasRole('ADMIN')")
     public ResponseEntity<?> submitOrder(Principal principal, @RequestBody OrderDto orderDto) {
@@ -61,7 +80,6 @@ public class OrderController {
         List<OrderAdvertDto> formDtos = form.getAdvertOrders();
         validateAdvertsExistence(formDtos);
         Order order = new Order();
-//        order.setStatus(OrderStatus.PAID.name());
         order = this.orderService.create(order, principal);
 
         List<OrderAdvert> orderAdverts = new ArrayList<>();

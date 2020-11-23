@@ -17,7 +17,6 @@ import javax.transaction.Transactional;
 import java.security.Principal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,6 +114,36 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Iterable<OrderDto> getAllSubmittedOrders(Principal principal) {
+        List<OrderDto> orderDtos = new ArrayList<>();
+        List<Order> orderList = this.orderRepository.findAll();
+        for(Order order : orderList) {
+            if (!order.getStatus().equals(OrderStatus.SUBMITTED.getStatus())) {
+                continue;
+            }
+
+            OrderDto orderDto = new OrderDto();
+            orderDto.setId(order.getId());
+            orderDto.setStatus(order.getStatus());
+            List<OrderAdvertDto> orderAdvertDtoList = new ArrayList<>();
+            for(OrderAdvert orderAdvert : order.getOrderAdverts()) {
+                OrderAdvertDto orderAdvertDto = new OrderAdvertDto();
+                orderAdvertDto.setAdvert(new AdvertDto(
+                        orderAdvert.getAdvert().getId(), orderAdvert.getAdvert().getProduct(),
+                        orderAdvert.getAdvert().getUser().getUsername()
+                ));
+                orderAdvertDto.setQuantity(orderAdvert.getQuantity());
+                orderAdvertDtoList.add(orderAdvertDto);
+            }
+            if (!orderAdvertDtoList.isEmpty()) {
+                orderDto.setAdvertOrders(orderAdvertDtoList);
+                orderDtos.add(orderDto);
+            }
+        }
+        return orderDtos;
+    }
+
+    @Override
     public void submitOrder(OrderDto order, Principal principal) {
         String username = principal.getName();
         User user = userRepository.findByUsername(username)
@@ -135,8 +164,26 @@ public class OrderServiceImpl implements OrderService {
         }
         submitted.setSubmitters(newList);
         if (newList.isEmpty()) {
-            submitted.setStatus(OrderStatus.SUMBITTED.getStatus());
+            submitted.setStatus(OrderStatus.SUBMITTED.getStatus());
         }
         orderRepository.save(submitted);
+    }
+
+    @Override
+    public boolean deliverOrder(OrderDto orderDto, Principal principal) {
+        Optional<Order> opt = this.orderRepository.findById(orderDto.getId());
+        if (!opt.isPresent()) {
+            return false;
+        }
+
+        Order submitted = opt.get();
+
+        if (submitted.getStatus().equals(OrderStatus.DELIVERED.getStatus()))
+            return false;
+
+        submitted.setStatus(OrderStatus.DELIVERED.getStatus());
+        orderRepository.save(submitted);
+
+        return true;
     }
 }

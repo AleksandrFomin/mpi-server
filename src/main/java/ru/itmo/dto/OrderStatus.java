@@ -2,7 +2,8 @@ package ru.itmo.dto;
 
 public enum OrderStatus {
     NEW("NEW"),
-    SUMBITTED("SUBMITTED");
+    SUBMITTED("SUBMITTED"),
+    DELIVERED("DELIVERED");
 
     private String status;
 
